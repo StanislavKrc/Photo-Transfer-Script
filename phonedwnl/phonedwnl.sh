@@ -1,10 +1,6 @@
 #!/bin/bash
-#PDIR="testfolder/phone dir/"
-#TDIR="testfolder/target dir/"
 PDIR="$1"
 TDIR="$2"
-#echo "$TDIR"/`date +%m%d%Y`
-#currentDate=`date +%m.%d.%Y`
 help () {
     echo -e "\nFormat is: phonedwnl.sh source/help target flags"
     echo -e "\nFlags: \n"
@@ -25,7 +21,8 @@ check () {
             then
                 help
             else
-                echo -e "\n\t\tError: Directory wasnt found\n"
+                echo -e "\n\t\tError: Directory wasnt found"
+                echo -e "\n\t\tGiven directories:\n\t\t$PDIR\n\t\t$TDIR"
                 exit 1
             fi
         else
