@@ -1,2 +1,2 @@
-InitP,DCIM/phone dir
-InitT,target dir
+Init,DCIM/phone dir,target dir
+anotherfile,DCIM/phone dir,target dir
