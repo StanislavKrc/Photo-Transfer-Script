@@ -30,9 +30,6 @@ check () {
                 help
                 #first argument is something else
             else
-                : 'echo -e "\n\t\tError: Directory wasnt found"
-                echo -e "\n\t\tGiven directories:\n\t\t$PDIR\n\t\t$TDIR"
-                exit 1'
                 GetPath "$@"
             fi
             #directories exists
@@ -46,15 +43,28 @@ check () {
 
 #check got non existent directory,looks for name in Directories.log file
 GetPath () {
+    #open file in variable
     in=$(cat "$TDIR")
+    #auxiliary variable for filtering
     filter="$PDIR"
+    #directory path rewriting
     PDIR=$(echo "$in" | awk -F ',' -v preset=$filter '{if($1 == preset){print $2}}')
     TDIR=$(echo "$in" | awk -F ',' -v preset=$filter '{if($1 == preset){print $3}}')
+    #do they exist?
     if [ ! -d "$PDIR" ] || [ ! -d "$TDIR" ];
     then
-        echo -e "\n\t\tError: Directory wasnt found"
-        echo -e "\n\t\tGiven directories:\n\t\t$PDIR\n\t\t$TDIR"
-        exit 1
+        #they dont and keyword wasnt found
+        if [ "$PDIR" == "" ] || [ "$TDIR" == " " ];
+        then
+            echo -e "\n\t\tError: Given faulty parameter"
+            exit 1
+        #they dont but directory is faulty
+        else
+            echo -e "\n\t\tError: Directory wasnt found"
+            echo -e "\n\t\tGiven directories:\n\t\t$PDIR\n\t\t$TDIR"
+            exit 1
+        fi
+    #they do
     else
         shift 2
         argParser "$@"
@@ -117,6 +127,7 @@ argParser () {
         
         *)
             echo -e "\n\t\t Error:Unknown command\n"
+            exit 1
         ;;
         
     esac
