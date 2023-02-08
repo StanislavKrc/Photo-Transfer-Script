@@ -1,6 +1,7 @@
 #!/bin/bash
 PDIR="$1"
 TDIR="$2"
+#prints help
 help () {
     echo -e "\nFormat is: phonedwnl.sh source/help target flags"
     echo -e "\nFlags: \n"
@@ -11,6 +12,8 @@ help () {
     echo "-a : copies all listed above"
     exit 0 
 }
+: ' checks if first argument is given,and if both given directories exists
+in case they do,move to transfer type arguments'
 check () {
 
     if [ "$PDIR" != "" ]
@@ -33,6 +36,7 @@ check () {
     fi
     
 }
+#adds new subdirectory for TDIR based on current date
 newDir () {
     NDIR="$TDIR"/`date +%d.%m.%Y`
     if [ ! -d "$NDIR" ];
@@ -40,6 +44,7 @@ newDir () {
         mkdir "$NDIR"
     fi
 }
+#copies "all" phone subdirectories
 copyAll () {
     newDir
     cp -R "${PDIR}/facebook/"* "$NDIR"
@@ -47,21 +52,25 @@ copyAll () {
     cp -R "${PDIR}/whatsapp/"* "$NDIR"
 }
 
+ #copies photo subdirecotry
 copyPhoto () {
     newDir
     cp -R "${PDIR}/photo/"* "$NDIR"
 }
 
+ #copies whatsapp subdirecotry
 copyWA () {
     newDir
     cp -R "${PDIR}/whatsapp/"* "$NDIR"
 }
 
+ #copies facebook subdirecotry
 copyFB () {
     newDir
     cp -R "${PDIR}/facebook/"* "$NDIR"
 }
 
+#switch function used to process transfer type arguments
 argParser () {
     case $1 in
 
