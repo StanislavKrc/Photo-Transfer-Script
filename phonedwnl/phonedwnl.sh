@@ -1,18 +1,21 @@
 #!/bin/bash
 PDIR="$1"
 TDIR="$2"
+TMP="$1,$2"
 #prints help
 help () {
-    echo -e "\nFormat is: \n
-        phonedwnl.sh source target 'transfer type arguments array'
-        phonedwnl.sh preset presetlist 'transfer type arguments array'
+    echo -e "\nFormat is:\n
+    phonedwnl.sh source target 'transfer type arguments array'
+    phonedwnl.sh source target 'transfer type arguments array' -new keyword filename
+    phonedwnl.sh preset presetlist 'transfer type arguments array'
     phonedwnl.sh -h"
     echo -e "\nFlags: \n"
-    echo "-h : help, writes help once then ends script"
-    echo "-p : copies photo folder"
-    echo "-f : copies facebook folder"
-    echo "-w : copies whatsapp folder"
-    echo "-a : copies all listed above"
+    echo "-h                        : help, writes help once then ends script"
+    echo "-p                        : copies photo folder"
+    echo "-f                        : copies facebook folder"
+    echo "-w                        : copies whatsapp folder"
+    echo "-a                        : copies all listed above"
+    echo "-new [keyword] [filename] : creates new keyword in list of keywords,or adds keyword to existing one,if one exists,transfer happens but list doesnt change"
     exit 0
 }
 : ' checks if first argument is given,and if both given directories exists
@@ -34,12 +37,25 @@ check () {
             fi
             #directories exists
         else
+            #new list?
             shift 2
             argParser "$@"
         fi
     fi
     
 }
+
+#if -new argument is given,script expects keyword and name of target file 
+: 'newKeyword () {
+    #file exists
+    if [ -f "$3"]
+    then
+        #add keyword($2),tmp
+    else
+        #create new file($3),add keyword($2),tmp
+    fi
+    shift 2
+}'
 
 #check got non existent directory,looks for name in Directories.log file
 GetPath () {
