@@ -48,9 +48,19 @@ check () {
 
 #if -new argument is given,scripts creates new file of given type and adds new keyword to it
 newKeyword () {
-    newFile="$3.$4"
-    touch "$newFile"
-    echo "$2,$PDIR,$TDIR" >> $newFile
+    if [ "$4" == "" ];
+    then
+        newFile="$3"
+    else
+        newFile="$3.$4"
+    fi
+    if [ ! -f "$newFile" ];
+    then
+        touch "$newFile"
+        echo "$2,$PDIR,$TDIR" >> $newFile
+    else
+       echo -e "\n\tWarning: File already exists,please type a new one or use -add\n" 
+    fi
 }
 
 #if -add argument is given,script checks that file exists and given keyword is unique
@@ -184,7 +194,7 @@ argParser () {
     then
         argParser "$@"
     else
-        echo -e "\n\tAll done,Transfer executed succesfully.\n"
+        echo -e "\n\tAll done,script ended succesfully.\n"
         exit 0
     fi
 }
