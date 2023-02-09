@@ -11,4 +11,3 @@ Script excpects one of following formats:
   where preset is keyword with data,presetlist file in format preset,source,target
 3) phonedwnl.sh -h
   prints help
-

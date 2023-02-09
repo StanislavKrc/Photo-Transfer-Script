@@ -10,16 +10,17 @@ help () {
     phonedwnl.sh preset presetlist 'transfer type arguments array'
     phonedwnl.sh -h"
     echo -e "\nFlags: \n"
-    echo "-h                        : help, writes help once then ends script"
-    echo "-p                        : copies photo folder"
-    echo "-f                        : copies facebook folder"
-    echo "-w                        : copies whatsapp folder"
-    echo "-a                        : copies all listed above"
-    echo "-new [keyword] [filename] : creates new keyword in list of keywords,or adds keyword to existing one,if one exists,transfer happens but list doesnt change"
+    echo "-h                                   : help, writes help once then ends script"
+    echo "-p                                   : copies photo folder"
+    echo "-f                                   : copies facebook folder"
+    echo "-w                                   : copies whatsapp folder"
+    echo "-a                                   : copies all listed above"
+    echo "-add [keyword] [filename]            : adds keyword to existing one,if one exists,transfer happens but list doesnt change"
+    echo "-new [keyword] [filename] [filetype] : creates new keyword in list of keywords,or adds keyword to existing one,if one exists,transfer happens but list doesnt change"
     exit 0
 }
-: ' checks if first argument is given,and if both given directories exists
-in case they do,move to transfer type arguments'
+#checks if first argument is given,and if both given directories exists
+#in case they do,move to transfer type arguments'
 check () {
     #argument is given
     if [ "$PDIR" != "" ]
@@ -45,17 +46,31 @@ check () {
     
 }
 
-#if -new argument is given,script expects keyword and name of target file 
-: 'newKeyword () {
+#if -new argument is given,scripts creates new file of given type and adds new keyword to it
+newKeyword () {
+    newFile="$3.$4"
+    touch "$newFile"
+    echo "$2,$PDIR,$TDIR" >> $newFile
+}
+
+#if -add argument is given,script checks that file exists and given keyword is unique
+addKeyword () {
     #file exists
-    if [ -f "$3"]
+    if [ -f "$3" ];
     then
-        #add keyword($2),tmp
+        filter="$2"
+        in=$(cat "$3")
+        count=$(echo "$in" | awk -F ',' -v preset=$filter 'BEGIN {count=0;}  { if ($1 == preset) count+=1} END {print count}')
+        if [ "$count" == "0" ];
+        then
+            echo "$2,$PDIR,$TDIR" >> $3
+        else
+            echo -e "\n\tWarning: Keyword already exists,please type a new one\n"
+        fi
     else
-        #create new file($3),add keyword($2),tmp
+        echo -e "\n\t\tWarning: File doesnt exist,keyword wasnt saved\n"
     fi
-    shift 2
-}'
+}
 
 #check got non existent directory,looks for name in Directories.log file
 GetPath () {
@@ -147,8 +162,18 @@ argParser () {
         -w)
             copyWA
         ;;
-        
+
+        -add)
+            addKeyword "$@"
+            shift 2
+        ;;
+
+        -new)
+            newKeyword "$@"
+            shift 3
+        ;;
         *)
+            echo "$1"
             echo -e "\n\t\t Error:Unknown command\n"
             exit 1
         ;;
@@ -159,7 +184,7 @@ argParser () {
     then
         argParser "$@"
     else
-        echo -e "\n\tAll done,Script executed succesfully.\n"
+        echo -e "\n\tAll done,Transfer executed succesfully.\n"
         exit 0
     fi
 }
