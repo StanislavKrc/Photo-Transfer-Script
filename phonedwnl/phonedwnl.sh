@@ -47,6 +47,13 @@ GetPath () {
     in=$(cat "$TDIR")
     #auxiliary variable for filtering
     filter="$PDIR"
+    #variable used for catching multiple keyword usage
+    count=$(echo "$in" | awk -F ',' -v preset=$filter 'BEGIN {count=0;}  { if ($1 == preset) count+=1} END {print count}')
+    if [ "$count" != "1" ]
+    then
+        echo -e "\n\t\tError: Keyword is not present,or used multiple times\n"
+        exit 1
+    fi
     #directory path rewriting
     PDIR=$(echo "$in" | awk -F ',' -v preset=$filter '{if($1 == preset){print $2}}')
     TDIR=$(echo "$in" | awk -F ',' -v preset=$filter '{if($1 == preset){print $3}}')
